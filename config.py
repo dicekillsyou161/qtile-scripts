@@ -1,39 +1,25 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+import os
+import re
+import socket
+import subprocess
 
-
-#from plasma import Plasma
-from libqtile import bar, layout, widget
+from plasma import Plasma
+from qtile_extras.widget import GlobalMenu, WiFiIcon
+from libqtile import qtile
+from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, EzKey
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+from libqtile.widget import Spacer
+from floating_window_snapping import move_snap_window
+from graphical_notifications import Notifier
+from powerline.bindings.qtile.widget import PowerlineTextBox
+from typing import List  # noqa: F401from typing import List  # noqa: F401
 
 mod = "mod4"
 terminal = "/usr/bin/kitty"  #guess_terminal()
 file_Manager = "/usr/bin/nemo" # or what ever your file manager or app
+notifier = Notifier()
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -48,10 +34,16 @@ keys = [
     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+    Key([mod, "shift"], "h", lazy.layout.move_left(), desc="Move window to the left"),
+    Key([mod, "shift"], "l", lazy.layout.move_right(), desc="Move window to the right"),
+    Key([mod, "shift"], "j", lazy.layout.move_down(), desc="Move window down"),
+    Key([mod, "shift"], "k", lazy.layout.move_up(), desc="Move window up"),
+    Key([mod], "a", lazy.layout.grow_width(30)),
+    Key([mod], "z", lazy.layout.grow_width(-30)),
+    Key([mod], "s", lazy.layout.grow_height(30)),
+    Key([mod], "x", lazy.layout.grow_height(-30)),
+    Key([mod, "shift"], "c", lazy.layout.mode_horizontal_split()),
+    Key([mod, "shift"], "v", lazy.layout.mode_vertical_split()),
     # Grow windows. If current window is on the edge of screen and direction
     # will be to screen edge - window would shrink.
     Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
@@ -76,33 +68,37 @@ keys = [
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
 ]
 
-groups = [Group(i) for i in "123456789"]
+# Changing the workspace names
+groups = [Group("WWW-1", layout='treetab'),
+     	  Group("CLI-2", layout='plasma'),
+     	  Group("CHAT-3", layout='treetab'),
+     	  Group("AUD-4", layout='treetab'),
+          Group("QEMU-5", layout='treetab'),
+          Group("GFX-6", layout='plasma'),
+          Group("MISC-7", layout='plasma'),
+          Group("MISC-8", layout='plasma')]
 
-for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            Key(
-                [mod],
-                i.name,
-                lazy.group[i.name].toscreen(),
-                desc="Switch to group {}".format(i.name),
-            ),
-            # mod1 + shift + letter of group = switch to & move focused window to group
-            Key(
-                [mod, "shift"],
-                i.name,
-                lazy.window.togroup(i.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(i.name),
-            ),
-            # Or, use below if you prefer not to switch to that group.
-            # # mod1 + shift + letter of group = move focused window to group
-            # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-            #     desc="move focused window to group {}".format(i.name)),
-        ]
-    )
+##commented out old group name and enumeration arguments
+#def init_groups():
+#    return [Group(name, **kwargs) for name, kwargs in group_names]
+
+#if __name__ in ["config", "__main__"]:
+#    group_names = init_group_names()
+#    groups = init_groups()
+
+# Allow MODKEY+[0 through 9] to bind to groups, see https://docs.qtile.org/en/stable/manual/config/groups.html
+# MOD4 + index Number : Switch to Group[index]
+# MOD4 + shift + index Number : Send active window to another Group
+from libqtile.dgroups import simple_key_binder
+dgroups_key_binder = simple_key_binder("mod4")
+
+##commented out old group keybind arguments
+#for i, (name, kwargs) in enumerate(group_names, 1):
+#    keys.append(Key([mod], str(i), lazy.group[name].toscreen()))	#switch to another group
+#    keys.append(Key([mod, "shift"], str(i), lazy.window.togroup(name)))	#send current window to another group
 
 layouts = [
     layout.TreeTab(),
@@ -118,7 +114,16 @@ layouts = [
     # layout.Tile(),
     # layout.TreeTab(),
     layout.VerticalTile(),
-    # layout.Zoomy(),
+    layout.Zoomy(),
+    Plasma(
+        border_normal='#333333',
+        border_focus='#00e891',
+        border_normal_fixed='#006863',
+        border_focus_fixed='#00e8dc',
+        border_width=1,
+        border_width_single=0,
+        margin=0
+    ),
 ]
 
 widget_defaults = dict(
@@ -142,6 +147,7 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
+                # widget.GlobalMenu(),
                 widget.CapsNumLockIndicator(foreground="#9803fc"),
                 widget.TextBox("net:", foreground="#03f4fc"),
                 widget.NetGraph(),
@@ -153,6 +159,9 @@ screens = [
                 widget.CPUGraph(),
                 widget.ThermalSensor(),
                 widget.QuickExit(),
+                #PowerlineTextBox(update_interval=2, side='left'),
+                #Spacer(),
+                #PowerlineTextBox(update_interval=2, side='right'),
             ],
             32,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
@@ -168,10 +177,9 @@ mouse = [
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 
-dgroups_key_binder = None
 dgroups_app_rules = []  # type: list
-follow_mouse_focus = True
-bring_front_click = False
+follow_mouse_focus = False #don't have the cursor just follow wherever the mouse is, this is a fucking nightmare with multiple monitors, just typing shit all over the place. Fuck.
+bring_front_click = True # Click into a window to change focus
 cursor_warp = False
 floating_layout = layout.Floating(
     float_rules=[
@@ -206,12 +214,7 @@ wl_input_rules = None
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
 
-
-import os
-import subprocess
-
-from libqtile import hook
-
+## Define hook to run a startup script on qtile startup
 @hook.subscribe.startup_once
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
