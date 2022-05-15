@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import socket
 import subprocess
 
@@ -7,7 +8,7 @@ from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
 from libqtile import qtile
 from libqtile import bar, layout, widget, hook
-from libqtile.config import Click, Drag, Group, Key, Match, Screen, EzKey
+from libqtile.config import Click, Drag, Group, Key, Match, Screen, EzKey, Rule
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile.widget import Spacer
@@ -15,6 +16,49 @@ from floating_window_snapping import move_snap_window
 from graphical_notifications import Notifier
 from powerline.bindings.qtile.widget import PowerlineTextBox
 from typing import List  # noqa: F401from typing import List  # noqa: F401
+from subprocess import call
+
+## Utils
+
+
+def to_urgent(qtile):
+    cg = qtile.currentGroup
+    for group in qtile.groupMap.values():
+        if group == cg:
+            continue
+        if len([w for w in group.windows if w.urgent]) > 0:
+            qtile.currentScreen.setGroup(group)
+            return
+
+
+def switch_to(name):
+    def callback(qtile):
+        for window in qtile.windowMap.values():
+            if window.group and window.match(wname=name):
+                qtile.currentScreen.setGroup(window.group)
+                window.group.focus(window, False)
+                break
+    return callback
+
+
+class SwapGroup(object):
+    def __init__(self, group):
+        self.group = group
+        self.last_group = None
+
+    def group_by_name(self, groups, name):
+        for group in groups:
+            if group.name == name:
+                return group
+
+    def __call__(self, qtile):
+        group = self.group_by_name(qtile.groups, self.group)
+        cg = qtile.currentGroup
+        if cg != group:
+            qtile.currentScreen.setGroup(group)
+            self.last_group = cg
+        elif self.last_group:
+            qtile.currentScreen.setGroup(self.last_group)
 
 mod = "mod4"
 terminal = "/usr/bin/kitty"  #guess_terminal()
@@ -72,14 +116,56 @@ keys = [
 ]
 
 # Changing the workspace names
-groups = [Group("WWW-1", layout='treetab'),
-     	  Group("CLI-2", layout='plasma'),
-     	  Group("CHAT-3", layout='treetab'),
-     	  Group("AUD-4", layout='treetab'),
-          Group("QEMU-5", layout='treetab'),
-          Group("GFX-6", layout='plasma'),
-          Group("MISC-7", layout='plasma'),
-          Group("MISC-8", layout='plasma')]
+groups = [
+          Group('im', init=False, persist=False,
+          matches=[Match(wm_instance_class=['im'])],
+          position=2, exclusive=True),
+          
+          # Terminals
+          Group("CLI-1", exclusive=True,
+          matches=[Match(wm_class=['kitty', 'alacritty'])],
+          position=1,layout='plasma'
+          ),
+          
+          # Next groups do not autostart, and only launch if the rule matches
+     	  Group('GFX', persist=False, init=False, layout='treetab',
+          matches=[Match(wm_class=['gimp'])]
+          ),
+     	  
+     	  # Max Groups
+          # --------------
+          Group('DISC', init=False, persist=False, exclusive=True, layout='max', matches=[
+              Match(wm_class=['discord'])
+              ], position=3),
+          Group('WWW-2', init=False, persist=False, exclusive=True, layout='treetab', matches=[
+              Match(wm_class=['chromium-browser', 'firefox'],
+                    role=['browser'])
+              ], position=4),
+          Group('YT', init=False, persist=False, exclusive=True, layout='max', matches=[
+              Match(wm_class=['chromium'])
+              ], position=5),
+          Group('AUD', init=False, persist=False, layout='treetab',
+                matches=[Match(wm_class=['pulsemixer'])]
+                ),
+          Group('QEMU', init=False, persist=False,
+                matches=[Match(wm_class=['virt-manager'])]
+                ),
+
+          # Misc Groups Persist
+          Group("MISC1", layout='treetab'),
+          Group("MISC2", layout='plasma')]
+          
+# dgroup rules that not belongs to any group
+dgroups_app_rules = [
+    # Everything i want to be float, but don't want to change group
+    Rule(Match(title=['nested', 'gscreenshot'],
+               wm_class=['Guake.py', 'Exe', 'Onboard', 'Florence',
+                         'Plugin-container', 'Terminal', 'Gpaint',
+                         'Kolourpaint', 'Wrapper', 'Gcr-prompter',
+                         'Ghost', 'feh', 'Gnuplot', 'Pinta'],
+               ),
+         float=True, intrusive=True),
+    ]
 
 ##commented out old group name and enumeration arguments
 #def init_groups():
