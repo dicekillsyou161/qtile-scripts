@@ -122,7 +122,7 @@ groups = [
           position=2, exclusive=True),
           
           # Terminals
-          Group("CLI-1", exclusive=True,
+          Group("CLI", exclusive=True,
           matches=[Match(wm_class=['kitty', 'alacritty'])],
           position=1,layout='plasma'
           ),
@@ -137,7 +137,7 @@ groups = [
           Group('DISC', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['discord'])
               ], position=3),
-          Group('WWW-2', init=False, persist=False, exclusive=True, layout='treetab', matches=[
+          Group('WWW', init=False, persist=False, exclusive=True, layout='treetab', matches=[
               Match(wm_class=['chromium-browser', 'firefox'],
                     role=['browser'])
               ], position=4),
