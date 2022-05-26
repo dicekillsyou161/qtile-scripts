@@ -3,6 +3,7 @@ import re
 import json
 import socket
 import subprocess
+import time
 
 from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
@@ -17,9 +18,44 @@ from graphical_notifications import Notifier
 from powerline.bindings.qtile.widget import PowerlineTextBox
 from typing import List  # noqa: F401from typing import List  # noqa: F401
 from subprocess import call
+from capnum import CapNum
 
 ## Utils
 
+def kill_all_windows_minus_current():
+	@lazy.function
+	def __inner(qtile):
+		for window in qtile.current_group.windows:
+			if window != qtile.current_window:
+				window.kill()
+	return __inner
+
+def window_to_prev_group(qtile):
+    if qtile.currentWindow is not None:
+        i = qtile.groups.index(qtile.currentGroup)
+        qtile.currentWindow.togroup(qtile.groups[i - 1].name)
+
+def window_to_next_group(qtile):
+    if qtile.currentWindow is not None:
+        i = qtile.groups.index(qtile.currentGroup)
+        qtile.currentWindow.togroup(qtile.groups[i + 1].name)
+
+def window_to_previous_screen(qtile):
+    i = qtile.screens.index(qtile.current_screen)
+    if i != 0:
+        group = qtile.screens[i - 1].group.name
+        qtile.current_window.togroup(group)
+
+def window_to_next_screen(qtile):
+    i = qtile.screens.index(qtile.current_screen)
+    if i + 1 != len(qtile.screens):
+        group = qtile.screens[i + 1].group.name
+        qtile.current_window.togroup(group)
+
+def switch_screens(qtile):
+    i = qtile.screens.index(qtile.current_screen)
+    group = qtile.screens[i - 1].group
+    qtile.current_screen.set_group(group)
 
 def to_urgent(qtile):
     cg = qtile.currentGroup
@@ -61,6 +97,7 @@ class SwapGroup(object):
             qtile.currentScreen.setGroup(self.last_group)
 
 mod = "mod4"
+alt = "mod1"
 terminal = "/usr/bin/kitty"  #guess_terminal()
 file_Manager = "/usr/bin/nemo" # or what ever your file manager or app
 notifier = Notifier()
@@ -69,11 +106,11 @@ keys = [
     # A list of available commands that can be bound to keys can be found
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
     # [Custom]
-    Key([mod, "shift"], "f", lazy.spawn(file_Manager), desc="Launch Nemo File Manager"),
+    Key([mod, "control"], "f", lazy.spawn(file_Manager), desc="Launch Nemo File Manager"),
     # Switch between windows
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+    Key([mod], "j", lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], "l", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     # Move windows between left/right columns or move up/down in current stack.
@@ -108,11 +145,55 @@ keys = [
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod, "shift"], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod, alt], "w", kill_all_windows_minus_current(), desc="Kill focused window except this one"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "control", "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
+    ### Switch focus to specific monitor (out of three)
+#    Key([mod], "w",
+#        lazy.to_screen(0),
+#        desc='Keyboard focus to monitor 1'
+#    ),
+#    Key([mod], "e",
+#        lazy.to_screen(1),
+#        desc='Keyboard focus to monitor 2'
+#    ),
+#    Key([mod], "r",
+#        lazy.to_screen(2),
+#        desc='Keyboard focus to monitor 3'
+#    ),
+    ### Switch focus of monitors
+    Key([mod], "period",
+        lazy.next_screen(),
+        desc='Move focus to next monitor'
+    ),
+    Key([mod], "comma",
+        lazy.prev_screen(),
+        desc='Move focus to prev monitor'
+    ),
+    Key([mod, "shift"], "f",
+        lazy.window.toggle_floating(),
+        desc='toggle floating'
+    ),
+    Key([mod, alt], "v",
+        lazy.spawn("midori"),
+        # lazy.spawn("xdg-open https://vim.rtorr.com"),
+        time.sleep(1),
+        lazy.window.toggle_floating(),
+        # desc='toggle floating'
+    ),
+    Key([mod, "shift", "control"], "h",
+        lazy.layout.shuffle_down(),
+        lazy.layout.section_down(),
+        desc='Move windows down in current stack'
+    ),
+    Key([mod, "shift", "control"], "j",
+        lazy.layout.shuffle_up(),
+        lazy.layout.section_up(),
+        desc='Move windows up in current stack'
+    ),
 ]
 
 # Changing the workspace names
@@ -123,13 +204,13 @@ groups = [
           
           # Terminals
           Group("CLI", exclusive=True,
-          matches=[Match(wm_class=['kitty', 'alacritty'])],
+          matches=[Match(wm_class=['kitty', 'alacritty', "midori"])],
           position=1,layout='plasma'
           ),
           
           # Next groups do not autostart, and only launch if the rule matches
      	  Group('GFX', persist=False, init=False, layout='treetab',
-          matches=[Match(wm_class=['gimp'])]
+          matches=[Match(wm_class=['gimp', 'org.gimp.GIMP', 'GNU Image Manipulation Program', 'Gimp-2.10'])]
           ),
      	  
      	  # Max Groups
@@ -144,6 +225,9 @@ groups = [
           Group('YT', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['chromium'])
               ], position=5),
+          Group('STEAM', init=False, persist=False, layout='max', matches=[
+              Match(wm_class=['steam'])
+              ]),
           Group('AUD', init=False, persist=False, layout='treetab',
                 matches=[Match(wm_class=['pulsemixer'])]
                 ),
@@ -158,49 +242,43 @@ groups = [
 # dgroup rules that not belongs to any group
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
-    Rule(Match(title=['nested', 'gscreenshot'],
+    Rule(Match(title=['nested', 'gscreenshot', 'Vim Cheat Sheet'],
                wm_class=['Guake.py', 'Exe', 'Onboard', 'Florence',
                          'Plugin-container', 'Terminal', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
-                         'Ghost', 'feh', 'Gnuplot', 'Pinta'],
+                         'Ghost', 'feh', 'Gnuplot', 'Pinta', 'Midori'],
                ),
          float=True, intrusive=True),
     ]
 
-##commented out old group name and enumeration arguments
-#def init_groups():
-#    return [Group(name, **kwargs) for name, kwargs in group_names]
-
-#if __name__ in ["config", "__main__"]:
-#    group_names = init_group_names()
-#    groups = init_groups()
-
-# Allow MODKEY+[0 through 9] to bind to groups, see https://docs.qtile.org/en/stable/manual/config/groups.html
-# MOD4 + index Number : Switch to Group[index]
-# MOD4 + shift + index Number : Send active window to another Group
 from libqtile.dgroups import simple_key_binder
 dgroups_key_binder = simple_key_binder("mod4")
 
-##commented out old group keybind arguments
-#for i, (name, kwargs) in enumerate(group_names, 1):
-#    keys.append(Key([mod], str(i), lazy.group[name].toscreen()))	#switch to another group
-#    keys.append(Key([mod, "shift"], str(i), lazy.window.togroup(name)))	#send current window to another group
 
 layouts = [
-    layout.TreeTab(),
+    layout.TreeTab(sections=["1312","ACAB","161","AFA"]),
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
     layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=4),
     # layout.Bsp(),
-    layout.Matrix(),
+    # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
     # layout.Tile(),
     # layout.TreeTab(),
     layout.VerticalTile(),
-    layout.Zoomy(),
+    # layout.Zoomy(),
+    layout.Floating(
+        border_normal='#333333',
+        border_focus='#00e891',
+        border_normal_fixed='#006863',
+        border_focus_fixed='#00e8dc',
+        border_width=1,
+        border_width_single=0,
+        margin=1,
+    ),
     Plasma(
         border_normal='#333333',
         border_focus='#00e891',
@@ -218,6 +296,15 @@ widget_defaults = dict(
     padding=3,
 )
 extension_defaults = widget_defaults.copy()
+
+colors = [["#282c34", "#282c34"], # panel background
+          ["#3d3f4b", "#434758"], # background for current screen tab
+          ["#ffffff", "#ffffff"], # font color for group names
+          ["#ff5555", "#ff5555"], # border line color for current tab
+          ["#74438f", "#74438f"], # border line color for 'other tabs' and color for 'odd widgets'
+          ["#4f76c7", "#4f76c7"], # color for the 'even widgets'
+          ["#e1acff", "#e1acff"], # window name
+          ["#ecbbfb", "#ecbbfb"]] # backbround for inactive screens
 
 screens = [
     Screen(
@@ -244,6 +331,14 @@ screens = [
                 widget.TextBox("CPU:", foreground="#03f4fc"),
                 widget.CPUGraph(),
                 widget.ThermalSensor(),
+                widget.CheckUpdates(
+                    update_interval = 1800,
+                    distro = "Arch_checkupdates",
+                    display_format = "{updates} Updates",
+                    foreground = colors[2],
+                    mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + ' -e sudo pacman -Syu')},
+                    background = colors[4]
+                ),
                 widget.QuickExit(),
                 #PowerlineTextBox(update_interval=2, side='left'),
                 #Spacer(),
@@ -253,6 +348,14 @@ screens = [
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
+#    bottom=bar.Bar(
+#           [
+#                #PowerlineTextBox(update_interval=2, side='left'),
+#                #Spacer(),
+#                PowerlineTextBox(update_interval=2, side='right'),
+#           ],
+#           35,
+#        ),
     ),
 ]
 
