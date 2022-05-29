@@ -4,6 +4,11 @@ import json
 import socket
 import subprocess
 import time
+import struct
+import fcntl
+import psutil
+import therm_widget
+import iwlib
 
 from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
@@ -17,10 +22,37 @@ from floating_window_snapping import move_snap_window
 from graphical_notifications import Notifier
 from powerline.bindings.qtile.widget import PowerlineTextBox
 from typing import List  # noqa: F401from typing import List  # noqa: F401
-from subprocess import call
+from subprocess import call, check_output
 from capnum import CapNum
+from platforms import num_screens, hostname
+from therm_widget import ThermalSensorCC
 
 ## Utils
+
+class Commands:
+    update = 'sudo pacman -Syu'
+    # volume_up = '-e pactl -- set-sink-volume 0 +1%'
+    # volume_down = 'pactl -- set-sink-volume 0 -1%'
+    # mute = 'pactl -- set-sink-volume 0 0%'
+    def get_kernel_release(self):
+        return check_output(['uname', '-r']).decode("utf-8").replace("\n", "")
+
+    def get_uptime(self):
+        return check_output(['uptime', '-p']).decode("utf-8").replace("\n", "")
+        
+    def get_name(self):
+        return check_output(['whoami']).decode("utf-8").replace("\n", "")
+        
+    def get_host(self):
+        return check_output(['hostnamectl', 'hostname']).decode("utf-8").replace("\n", "")
+
+#    def get_cpu_temp(self):
+#        return str(int(''.join(filter(str.isdigit, check_output(["cputemp"]).decode("utf-8").replace("\n",""))))/10) + "C"
+
+
+
+commands = Commands() 
+
 
 def kill_all_windows_minus_current():
 	@lazy.function
@@ -151,19 +183,21 @@ keys = [
     Key([mod, "control", "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
-    ### Switch focus to specific monitor (out of three)
-#    Key([mod], "w",
-#        lazy.to_screen(0),
-#        desc='Keyboard focus to monitor 1'
-#    ),
-#    Key([mod], "e",
-#        lazy.to_screen(1),
-#        desc='Keyboard focus to monitor 2'
-#    ),
-#    Key([mod], "r",
-#        lazy.to_screen(2),
-#        desc='Keyboard focus to monitor 3'
-#    ),
+    #Key([], "XF86AudioRaiseVolume", lazy.spawn('pactl -- set-sink-volume 0 +2%')), # commented out b/c functionality is being more successfully handled by autostarting the volumeicon tray helper app 
+    #Key([], "XF86AudioLowerVolume", lazy.spawn('pactl -- set-sink-volume 0 -2%')),
+    #Key([], "XF86AudioMute", lazy.spawn('pactl -- set-sink-volume 0 0%')), 
+    Key([mod, alt], "1", lazy.spawn('pactl -- set-sink-volume 0 10%')),
+    Key([mod, alt], "2", lazy.spawn('pactl -- set-sink-volume 0 20%')),
+    Key([mod, alt], "3", lazy.spawn('pactl -- set-sink-volume 0 30%')),
+    Key([mod, alt], "4", lazy.spawn('pactl -- set-sink-volume 0 40%')),
+    Key([mod, alt], "5", lazy.spawn('pactl -- set-sink-volume 0 50%')),
+    Key([mod, alt], "6", lazy.spawn('pactl -- set-sink-volume 0 60%')),
+    Key([mod, alt], "7", lazy.spawn('pactl -- set-sink-volume 0 70%')),
+    Key([mod, alt], "8", lazy.spawn('pactl -- set-sink-volume 0 80%')),
+    Key([mod, alt], "9", lazy.spawn('pactl -- set-sink-volume 0 90%')),
+    Key([mod, alt], "0", lazy.spawn('pactl -- set-sink-volume 0 0%')),
+
+
     ### Switch focus of monitors
     Key([mod], "period",
         lazy.next_screen(),
@@ -180,7 +214,7 @@ keys = [
     Key([mod, alt], "v",
         lazy.spawn("midori"),
         # lazy.spawn("xdg-open https://vim.rtorr.com"),
-        time.sleep(1),
+        time.sleep(2),
         lazy.window.toggle_floating(),
         # desc='toggle floating'
     ),
@@ -259,24 +293,14 @@ layouts = [
     layout.TreeTab(sections=["1312","ACAB","161","AFA"]),
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
     layout.Max(),
-    # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=4),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
     layout.VerticalTile(),
-    # layout.Zoomy(),
     layout.Floating(
-        border_normal='#333333',
+        border_normal='#03f4f3',
         border_focus='#00e891',
-        border_normal_fixed='#006863',
+        border_normal_fixed='#03f4f3',
         border_focus_fixed='#00e8dc',
         border_width=1,
-        border_width_single=0,
+        border_width_single=1,
         margin=1,
     ),
     Plasma(
@@ -310,52 +334,89 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
+                widget.CurrentLayout(foreground="#da69c6"),
+                widget.GroupBox(
+                    active="03f4fc", 
+                    disable_drag=True, 
+                    inactive="004045",
+                    this_current_screen_border="#da69d6",
+                    this_screen_border="#da69d6",
+                    fontsize=14,
+                    spacing=5
+                ),
                 widget.Prompt(),
-                widget.WindowName(),
+                widget.WindowName(foreground="#da69c6"),
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                # widget.GlobalMenu(),
-                widget.CapsNumLockIndicator(foreground="#9803fc"),
-                widget.TextBox("net:", foreground="#03f4fc"),
-                widget.NetGraph(),
-                widget.TextBox("ACAB", foreground="#ff0000"),
-                # widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                 widget.TextBox("╱╱╱ ACAB", foreground="#03f4fc"),
                 widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a %H:%M"),
-                widget.TextBox("CPU:", foreground="#03f4fc"),
-                widget.CPUGraph(),
-                widget.ThermalSensor(),
+                widget.Clock(format="%Y-%m-%d %a ", foreground="#822a8b"),
+                widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
                 widget.CheckUpdates(
-                    update_interval = 1800,
-                    distro = "Arch_checkupdates",
-                    display_format = "{updates} Updates",
-                    foreground = colors[2],
-                    mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + ' -e sudo pacman -Syu')},
-                    background = colors[4]
+                    update_interval = 30,
+                    distro='Arch',
+                    display_format='{updates} Updates',
+                    colour_no_update=["00ff00"],
+                    colour_have_updates=["ff0000"],
+                    mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + '-e sudo pacman -Syu')},
+                   # execute=commands.update
                 ),
-                widget.QuickExit(),
-                #PowerlineTextBox(update_interval=2, side='left'),
-                #Spacer(),
-                #PowerlineTextBox(update_interval=2, side='right'),
-            ],
-            32,
-            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
+                widget.QuickExit(foreground="#822a8b"),
+                ],
+            26,
+            border_width=[0, 0, 1, 0],  # Draw top and bottom borders
+            border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
         ),
-#    bottom=bar.Bar(
-#           [
-#                #PowerlineTextBox(update_interval=2, side='left'),
-#                #Spacer(),
-#                PowerlineTextBox(update_interval=2, side='right'),
-#           ],
-#           35,
-#        ),
+    ),
+    Screen(
+     bottom=bar.Bar(
+           [
+                widget.CapsNumLockIndicator(foreground="#ff9ff9"),
+                widget.Spacer(length=50),
+                widget.TextBox(text=commands.get_name(), foreground=["#ff00c3"]),
+                widget.TextBox("@", foreground="#cab7c9"),  
+                widget.TextBox(text=commands.get_host(), foreground=["#ff00c3"]),
+                widget.Spacer(length=275),
+                widget.TextBox(text=commands.get_kernel_release(), foreground=["#03f4fc"]),
+                widget.Spacer(length=25),
+                widget.GenPollText(
+                    func=commands.get_uptime,
+                    update_interval=60,
+                    foreground=["#ff9ff9"]
+                    ),
+                widget.Spacer(length=275),
+                widget.TextBox(" mem:", foreground="#03f4fc"),               
+                widget.MemoryGraph(
+                    #line_width=1,
+                    #border_width=1,
+                    #width=4,
+                    #type='box',
+                    graph_color=["#ff57f7"],
+                    fill_color=["#ff57f7"]
+                    ),
+                widget.Spacer(length=15),
+                widget.TextBox(" CPU:", foreground="#03f4fc"),
+                widget.CPUGraph(
+                    graph_color=["#ff57f7"],
+                    fill_color=["#ff57f7"]
+                    ),
+                therm_widget.ThermalSensorCC(),
+                widget.Spacer(length=15),
+                widget.TextBox(" net:", foreground="#03f4fc"),
+                widget.NetGraph(
+                    graph_color=["#ff57f7"],
+                    fill_color=["#ff57f7"]
+                    ),
+
+            ],
+           24,
+           border_width=[1, 0, 0, 0],  # Draw top borders
+           border_color=["bd92bb", "000000", "000000", "000000"]  # Borders are pink/grey
+        ),
     ),
 ]
 
@@ -366,7 +427,7 @@ mouse = [
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 
-dgroups_app_rules = []  # type: list
+# dgroups_app_rules = []  # type: list
 follow_mouse_focus = False #don't have the cursor just follow wherever the mouse is, this is a fucking nightmare with multiple monitors, just typing shit all over the place. Fuck.
 bring_front_click = True # Click into a window to change focus
 cursor_warp = False
