@@ -1,0 +1,27 @@
+{
+  "segments": [
+    "virtual_env",
+    "username",
+    {
+      "type": "stdout",
+      "command": ["echo", "@"],
+      "fg_color": 0,
+      "bg_color": 161
+    },
+    "hostname",
+    "ssh",
+    "cwd",
+    "git",
+    {
+      "type": "stdout",
+      "command": ["echo", "╱╱╱"],
+      "fg_color": 0,
+      "bg_color": 170
+    },
+    "hg",
+    "jobs"
+  ],
+  "hostname": {
+    "colorize": true
+  }
+}
