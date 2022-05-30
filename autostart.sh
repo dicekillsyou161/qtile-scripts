@@ -1,5 +1,8 @@
 #!/bin/sh
 
-screen -d -m firefox
-screen -d -m feh --bg-fill .config/qtile/wallpaper.jpg
+./.screenlayout/default.sh
 
+screen -d -m feh --bg-fill .config/qtile/wallpaper.jpg
+screen -d -m flameshot
+screen -d -m yakuake
+screen -d -m volumeicon 
