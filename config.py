@@ -9,6 +9,7 @@ import fcntl
 import psutil
 import therm_widget
 import iwlib
+import primary_display
 
 from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
@@ -26,6 +27,8 @@ from subprocess import call, check_output
 from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
+from primary_display import primary_disp
+
 
 ## Utils
 
@@ -127,6 +130,9 @@ class SwapGroup(object):
             self.last_group = cg
         elif self.last_group:
             qtile.currentScreen.setGroup(self.last_group)
+
+def open_calendar():
+    qtile.cmd_spawn('gsimplecal next_month')
 
 mod = "mod4"
 alt = "mod1"
@@ -276,8 +282,8 @@ groups = [
 # dgroup rules that not belongs to any group
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
-    Rule(Match(title=['nested', 'gscreenshot', 'Vim Cheat Sheet'],
-               wm_class=['Guake.py', 'Exe', 'Onboard', 'Florence',
+    Rule(Match(title=['nested', 'gscreenshot', 'Vim Cheat Sheet', 'Gsimplecal'],
+               wm_class=['Guake.py', 'Exe', 'Gsimplecal', 'Onboard', 'Florence',
                          'Plugin-container', 'Terminal', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
                          'Ghost', 'feh', 'Gnuplot', 'Pinta', 'Midori'],
@@ -330,119 +336,237 @@ colors = [["#282c34", "#282c34"], # panel background
           ["#e1acff", "#e1acff"], # window name
           ["#ecbbfb", "#ecbbfb"]] # backbround for inactive screens
 
-screens = [
-    Screen(
-        top=bar.Bar(
-            [
-                widget.CurrentLayout(foreground="#da69c6"),
-                widget.GroupBox(
-                    active="03f4fc", 
-                    disable_drag=True, 
-                    inactive="004045",
-                    this_current_screen_border="#da69d6",
-                    this_screen_border="#da69d6",
-                    fontsize=14,
-                    spacing=5
-                ),
-                widget.Prompt(),
-                widget.WindowName(foreground="#da69c6"),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
-                 widget.TextBox("╱╱╱ ACAB", foreground="#03f4fc"),
-                widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a ", foreground="#822a8b"),
-                widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
-                widget.CheckUpdates(
-                    update_interval = 30,
-                    distro='Arch',
-                    display_format='{updates} Updates',
-                    colour_no_update=["00ff00"],
-                    colour_have_updates=["ff0000"],
-                    mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(terminal + '-e sudo pacman -Syu')},
-                   # execute=commands.update
-                ),
-                widget.QuickExit(foreground="#822a8b"),
-                ],
-            26,
-            border_width=[0, 0, 1, 0],  # Draw top and bottom borders
-            border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
+if str(primary_disp.get_prim_disp()) == "Disp":
+    screens = [
+        Screen(
+            top=bar.Bar(
+                [
+                    widget.CurrentLayout(foreground="#da69c6"),
+                    widget.GroupBox(
+                        active="03f4fc", 
+                        disable_drag=True, 
+                        inactive="004045",
+                        this_current_screen_border="#da69d6",
+                        this_screen_border="#da69d6",
+                        fontsize=14,
+                        spacing=5
+                        ),
+                    widget.Prompt(),
+                    widget.WindowName(foreground="#da69c6"),
+                    widget.Chord(
+                        chords_colors={
+                            "launch": ("#ff0000", "#ffffff"),
+                            },
+                        name_transform=lambda name: name.upper(),
+                        ),
+                    widget.TextBox(
+                        "╱╱╱ ACAB", 
+                        foreground="#03f4fc",
+                        mouse_callbacks={
+                            'Button1': lazy.spawn('acab'),
+                            'Button3': lazy.spawn('acab')
+                            }
+                        ),
+                    widget.Systray(),
+                    widget.Clock(
+                        format="%Y-%m-%d %a ", 
+                        foreground="#822a8b",
+                        mouse_callbacks={
+                            'Button1': open_calendar,
+                            'Button3': lazy.spawn('gsimplecal prev_month')
+                            }
+                        ),
+                    widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    widget.CheckUpdates(
+                        update_interval = 30,
+                        distro='Arch',
+                        display_format='{updates} Updates',
+                        colour_no_update=["00ff00"],
+                        colour_have_updates=["ff0000"],
+                        mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
+                        # execute=commands.update
+                        ),
+                    widget.QuickExit(foreground="#822a8b"),
+                    ],
+                26,
+                border_width=[0, 0, 1, 0],  # Draw top and bottom borders
+                border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
+            ),
         ),
-    ),
     Screen(
-     bottom=bar.Bar(
-           [
-                widget.CapsNumLockIndicator(foreground="#ff9ff9"),
-                widget.Spacer(length=50),
-                widget.TextBox(text=commands.get_name(), foreground=["#ff00c3"]),
-                widget.TextBox("@", foreground="#cab7c9"),  
-                widget.TextBox(text=commands.get_host(), foreground=["#ff00c3"]),
-                widget.Spacer(length=275),
-                widget.TextBox(text=commands.get_kernel_release(), foreground=["#03f4fc"]),
-                widget.Spacer(length=25),
-                widget.GenPollText(
-                    func=commands.get_uptime,
-                    update_interval=60,
-                    foreground=["#ff9ff9"]
-                    ),
-                widget.Spacer(length=275),
-                widget.TextBox(" mem:", foreground="#03f4fc"),               
-                widget.MemoryGraph(
-                    #line_width=1,
-                    #border_width=1,
-                    #width=4,
-                    #type='box',
-                    graph_color=["#ff57f7"],
-                    fill_color=["#ff57f7"]
-                    ),
-                widget.Spacer(length=15),
-                widget.TextBox(" CPU:", foreground="#03f4fc"),
-                widget.CPUGraph(
-                    graph_color=["#ff57f7"],
-                    fill_color=["#ff57f7"]
-                    ),
-                therm_widget.ThermalSensorCC(),
-                widget.Spacer(length=15),
-                widget.TextBox(" net:", foreground="#03f4fc"),
-                widget.NetGraph(
-                    graph_color=["#ff57f7"],
-                    fill_color=["#ff57f7"]
-                    ),
+            bottom=bar.Bar(
+                [
+                    widget.CapsNumLockIndicator(foreground="#ff9ff9"),
+                    widget.Spacer(length=50),
+                    widget.TextBox(text=commands.get_name(), foreground=["#ff00c3"]),
+                    widget.TextBox("@", foreground="#cab7c9"),  
+                    widget.TextBox(text=commands.get_host(), foreground=["#ff00c3"]),
+                    widget.Spacer(length=275),
+                    widget.TextBox(text=commands.get_kernel_release(), foreground=["#03f4fc"]),
+                    widget.Spacer(length=25),
+                    widget.GenPollText(
+                        func=commands.get_uptime,
+                        update_interval=60,
+                        foreground=["#ff9ff9"]
+                        ),
+                    widget.Spacer(length=275),
+                    widget.TextBox(" mem:", foreground="#03f4fc"),               
+                    widget.MemoryGraph(
+                        #line_width=1,
+                        #border_width=1,
+                        #width=4,
+                        #type='box',
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
+                    widget.Spacer(length=15),
+                    widget.TextBox(" CPU:", foreground="#03f4fc"),
+                    widget.CPUGraph(
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
+                    therm_widget.ThermalSensorCC(),
+                    widget.Spacer(length=15),
+                    widget.TextBox(" net:", foreground="#03f4fc"),
+                    widget.NetGraph(
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
 
-            ],
-           24,
-           border_width=[1, 0, 0, 0],  # Draw top borders
-           border_color=["bd92bb", "000000", "000000", "000000"]  # Borders are pink/grey
+                    ],
+                24,
+                border_width=[1, 0, 0, 0],  # Draw top borders
+                border_color=["bd92bb", "000000", "000000", "000000"]  # Borders are pink/grey
+            ),
         ),
-    ),
-]
+    ]
+else:
+    screens = [
+        Screen(
+            top=bar.Bar(
+                [
+                    widget.CurrentLayout(foreground="#da69c6"),
+                    widget.GroupBox(
+                        active="03f4fc", 
+                        disable_drag=True, 
+                        inactive="004045",
+                        this_current_screen_border="#da69d6",
+                        this_screen_border="#da69d6",
+                        fontsize=14,
+                        spacing=5
+                        ),
+                    widget.Prompt(),
+                    widget.WindowName(foreground="#da69c6"),
+                    widget.Chord(
+                        chords_colors={
+                            "launch": ("#ff0000", "#ffffff"),
+                            },
+                        name_transform=lambda name: name.upper(),
+                        ),
+                    widget.TextBox(
+                        "╱╱╱ ACAB", 
+                        foreground="#03f4fc",
+                        mouse_callbacks={
+                            'Button1': lazy.spawn('acab'),
+                            'Button3': lazy.spawn('acab')
+                            }
+                        ),
+                    widget.Systray(),
+                    widget.Clock(
+                        format="%Y-%m-%d %a ", 
+                        foreground="#822a8b",
+                        mouse_callbacks={
+                            'Button1': open_calendar,
+                            'Button3': lazy.spawn('gsimplecal prev_month')
+                            }
+                        ),
+                    widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    widget.CheckUpdates(
+                        update_interval = 30,
+                        distro='Arch',
+                        display_format='{updates} Updates',
+                        colour_no_update=["00ff00"],
+                        colour_have_updates=["ff0000"],
+                        mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
+                        # execute=commands.update
+                        ),
+                    widget.QuickExit(foreground="#822a8b"),
+                    ],
+                26,
+                border_width=[0, 0, 1, 0],  # Draw top and bottom borders
+                border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
+            ),
+            bottom=bar.Bar(
+                [
+                    widget.CapsNumLockIndicator(foreground="#ff9ff9"),
+                    widget.Spacer(length=50),
+                    widget.TextBox(text=commands.get_name(), foreground=["#ff00c3"]),
+                    widget.TextBox("@", foreground="#cab7c9"),  
+                    widget.TextBox(text=commands.get_host(), foreground=["#ff00c3"]),
+                    widget.Spacer(length=275),
+                    widget.TextBox(text=commands.get_kernel_release(), foreground=["#03f4fc"]),
+                    widget.Spacer(length=25),
+                    widget.GenPollText(
+                        func=commands.get_uptime,
+                        update_interval=60,
+                        foreground=["#ff9ff9"]
+                        ),
+                    widget.Spacer(length=275),
+                    widget.TextBox(" mem:", foreground="#03f4fc"),               
+                    widget.MemoryGraph(
+                        #line_width=1,
+                        #border_width=1,
+                        #width=4,
+                        #type='box',
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
+                    widget.Spacer(length=15),
+                    widget.TextBox(" CPU:", foreground="#03f4fc"),
+                    widget.CPUGraph(
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
+                    therm_widget.ThermalSensorCC(),
+                    widget.Spacer(length=15),
+                    widget.TextBox(" net:", foreground="#03f4fc"),
+                    widget.NetGraph(
+                        graph_color=["#ff57f7"],
+                        fill_color=["#ff57f7"]
+                        ),
+
+                    ],
+                24,
+                border_width=[1, 0, 0, 0],  # Draw top borders
+                border_color=["bd92bb", "000000", "000000", "000000"]  # Borders are pink/grey
+            ),
+        ),
+    ]
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
-]
+        Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+        Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+        Click([mod], "Button2", lazy.window.bring_to_front()),
+        ]
 
 # dgroups_app_rules = []  # type: list
 follow_mouse_focus = False #don't have the cursor just follow wherever the mouse is, this is a fucking nightmare with multiple monitors, just typing shit all over the place. Fuck.
 bring_front_click = True # Click into a window to change focus
 cursor_warp = False
 floating_layout = layout.Floating(
-    float_rules=[
-        # Run the utility of `xprop` to see the wm class and name of an X client.
-        *layout.Floating.default_float_rules,
-        Match(wm_class="confirmreset"),  # gitk
-        Match(wm_class="makebranch"),  # gitk
-        Match(wm_class="maketag"),  # gitk
-        Match(wm_class="ssh-askpass"),  # ssh-askpass
-        Match(title="branchdialog"),  # gitk
-        Match(title="pinentry"),  # GPG key password entry
-    ]
-)
+        float_rules=[
+            # Run the utility of `xprop` to see the wm class and name of an X client.
+            *layout.Floating.default_float_rules,
+            Match(wm_class="confirmreset"),  # gitk
+            Match(wm_class="Gsimplecal"),
+            Match(wm_class="makebranch"),  # gitk
+            Match(wm_class="maketag"),  # gitk
+            Match(wm_class="ssh-askpass"),  # ssh-askpass
+            Match(title="branchdialog"),  # gitk
+            Match(title="pinentry"),  # GPG key password entry
+            ]
+        )
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
