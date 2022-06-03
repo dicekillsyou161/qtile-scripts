@@ -372,7 +372,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                             'Button3': lazy.spawn('gsimplecal prev_month')
                             }
                         ),
-                    widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    widget.Clock(format="%H:%M:%S", foreground="#03f4fc"),
                     #internet_widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
