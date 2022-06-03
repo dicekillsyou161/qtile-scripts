@@ -477,7 +477,7 @@ else:
                             'Button3': lazy.spawn('gsimplecal prev_month')
                             }
                         ),
-                    widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    widget.Clock(format="%H:%M:%S", foreground="#03f4fc"),
                     #widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
