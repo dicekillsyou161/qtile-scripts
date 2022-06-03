@@ -29,15 +29,11 @@ from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
 from primary_display import primary_disp
-#from internet_widget import Internet 
 
 ## Utils
 
 class Commands:
     update = 'sudo pacman -Syu'
-    # volume_up = '-e pactl -- set-sink-volume 0 +1%'
-    # volume_down = 'pactl -- set-sink-volume 0 -1%'
-    # mute = 'pactl -- set-sink-volume 0 0%'
     def get_kernel_release(self):
         return check_output(['uname', '-r']).decode("utf-8").replace("\n", "")
 
@@ -49,10 +45,6 @@ class Commands:
         
     def get_host(self):
         return check_output(['hostnamectl', 'hostname']).decode("utf-8").replace("\n", "")
-
-#    def get_cpu_temp(self):
-#        return str(int(''.join(filter(str.isdigit, check_output(["cputemp"]).decode("utf-8").replace("\n",""))))/10) + "C"
-
 
 
 commands = Commands() 

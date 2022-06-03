@@ -74,22 +74,22 @@ class Notifier(configurable.Configurable):
     defaults = [
         ('x', 32, 'x position on screen to start drawing notifications.'),
         ('y', 64, 'y position on screen to start drawing notifications.'),
-        ('width', 192, 'Width of notifications.'),
-        ('height', 64, 'Height of notifications.'),
+        ('width', 300, 'Width of notifications.'),
+        ('height', 150, 'Height of notifications.'),
         ('format', '{summary}\n{body}', 'Text format.'),
         (
             'foreground',
-            ('#ffffff', '#ffffff', '#ffffff'),
+            ('#c1e1c5', '#FEF3BD', '#d4c4fb'),
             'Foreground colour of notifications, in ascending order of urgency.',
         ),
         (
             'background',
-            ('#111111', '#111111', '#111111'),
+            ('#19484d', '#4d4319', '#810000'),
             'Background colour of notifications, in ascending order of urgency.',
         ),
         (
             'border',
-            ('#111111', '#111111', '#111111'),
+            ('#19484d', '#4d4319', '#ff0000'),
             'Border colours in ascending order of urgency. Or None for none.',
         ),
         (
@@ -109,7 +109,7 @@ class Notifier(configurable.Configurable):
         ('line_spacing', 4, 'Space between lines.'),
         (
             'overflow',
-            'truncate',
+            'more_height',
             'How to deal with too much text: more_width, more_height, or truncate.',
         ),
         ('max_windows', 2, 'Maximum number of windows to show at once.'),
