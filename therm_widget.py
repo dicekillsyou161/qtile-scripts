@@ -77,26 +77,46 @@ class ThermalSensorCC(base.InLoopPollText):
             text = self.tag_sensor + ": "
         text += "".join(temp_values.get(self.tag_sensor, ["N/A"]))
         temp_value = float(temp_values.get(self.tag_sensor, [0])[0])        
-        if temp_value < 30.0:
-            self.layout.colour = "#2dc2b3"
-        elif temp_value <= 40.0:
-            self.layout.colour = "#2dc289"          
-        elif temp_value <= 50.0:
-            self.layout.colour = "#2dc261"
-        elif temp_value < 55.0:
-            self.layout.colour = "#2dc234"
-        elif temp_value < 60:
-            self.layout.colour = "#4fc22d"
-        elif temp_value < 65:
-            self.layout.colour = "#7ac22d"
-        elif temp_value < 70:
-            self.layout.colour = "#a1c22d"
-        elif temp_value < 75:
-            self.layout.colour = "#c2b82d"
-        elif temp_value < 80:
-            self.layout.colour = "#c2932d"
-        elif temp_value < 85:
-            self.layout.colour = "#c2722d"
-        else: #temp_value >= 85:
-            self.layout.colour = "#c2372d"
+        if temp_value <	30.00:
+        	self.layout.colour = "#21e7e0"
+        elif temp_value <=	33.25:
+        	self.layout.colour = "#1fe8c3"
+        elif temp_value <=	36.50:
+        	self.layout.colour = "#1ee9a6"
+        elif temp_value <=	39.75:
+        	self.layout.colour = "#1cea87"
+        elif temp_value <=	43.00:
+        	self.layout.colour = "#1bec68"
+        elif temp_value <=	46.25:
+        	self.layout.colour = "#19ed48"
+        elif temp_value <=	49.50:
+        	self.layout.colour = "#17ee27"
+        elif temp_value <=	52.75:
+        	self.layout.colour = "#26ef16"
+        elif temp_value <=	56.00:
+        	self.layout.colour = "#45f014"
+        elif temp_value <=	59.25:
+        	self.layout.colour = "#65f212"
+        elif temp_value <=	62.50:
+        	self.layout.colour = "#86f311"
+        elif temp_value <=	65.75:
+        	self.layout.colour = "#a8f40f"
+        elif temp_value <=	69.00:
+        	self.layout.colour = "#caf50d"
+        elif temp_value <=	72.25:
+        	self.layout.colour = "#eef60c"
+        elif temp_value <=	75.50:
+        	self.layout.colour = "#f8dd0a"
+        elif temp_value <=	78.75:
+        	self.layout.colour = "#f9bb08"
+        elif temp_value <=	82.00:
+        	self.layout.colour = "#fa9707"
+        elif temp_value <=	85.25:
+        	self.layout.colour = "#fb7305"
+        elif temp_value <=	88.50:
+        	self.layout.colour = "#fd4d03"
+        elif temp_value <=	91.75:
+        	self.layout.colour = "#fe2702"
+        else:
+        	self.layout.colour = "#ff0000"
         return text

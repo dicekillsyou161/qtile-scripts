@@ -10,6 +10,7 @@ import psutil
 import therm_widget
 import iwlib
 import primary_display
+#import internet_widget
 
 from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
@@ -28,7 +29,7 @@ from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
 from primary_display import primary_disp
-
+#from internet_widget import Internet 
 
 ## Utils
 
@@ -377,6 +378,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                             }
                         ),
                     widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    #internet_widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
                         distro='Arch',
@@ -481,6 +483,7 @@ else:
                             }
                         ),
                     widget.Clock(format="%H:%M:%S", foreground="#da69c6"),
+                    #widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
                         distro='Arch',
