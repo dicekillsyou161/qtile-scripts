@@ -275,6 +275,9 @@ groups = [
           Group('QEMU', init=False, persist=False,
                 matches=[Match(wm_class=['virt-manager'])]
                 ),
+          Group('UNREAL', init=False, persist=False, exclusive=True, layout='max', matches=[
+              Match(wm_class=['UE4Editor'])
+              ], position=6),          
 
           # Misc Groups Persist
           Group("MISC1", layout='treetab'),
