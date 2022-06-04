@@ -347,7 +347,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                     widget.GroupBox(
                         active=colors[5], 
                         disable_drag=True, 
-                        inactive=colors[3],
+                        inactive=colors[1],
                         this_current_screen_border=colors[7],
                         this_screen_border=colors[1],
                         fontsize=14,
