@@ -124,6 +124,7 @@ def open_calendar():
     qtile.cmd_spawn('gsimplecal next_month')
 
 
+# Load the PyWal theme colors into the qtile colors array
 colors = []
 cache='/home/zorthesosen/.cache/wal/colors'
 def load_colors(cache):
@@ -329,14 +330,6 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-#colors = [["#282c34", "#282c34"], # panel background
-#          ["#3d3f4b", "#434758"], # background for current screen tab
-#          ["#ffffff", "#ffffff"], # font color for group names
-#          ["#ff5555", "#ff5555"], # border line color for current tab
-#          ["#74438f", "#74438f"], # border line color for 'other tabs' and color for 'odd widgets'
-#          ["#4f76c7", "#4f76c7"], # color for the 'even widgets'
-#          ["#e1acff", "#e1acff"], # window name
-#          ["#ecbbfb", "#ecbbfb"]] # backbround for inactive screens
 
 if str(primary_disp.get_prim_disp()) == "Disp":
     screens = [
@@ -472,18 +465,33 @@ else:
         Screen(
             top=bar.Bar(
                 [
-                    widget.CurrentLayout(foreground="#da69c6"),
+                    widget.Sep(
+                        linewidth=2,
+                        foreground=colors[0],
+                        background=colors[0],
+                        padding=6,
+                        size_percent=50,
+                    ),
+                    widget.CurrentLayout(foreground=colors[2]),
                     widget.GroupBox(
-                        active="03f4fc", 
+                        active=colors[5], 
                         disable_drag=True, 
-                        inactive="004045",
-                        this_current_screen_border="#da69d6",
-                        this_screen_border="#da69d6",
+                        inactive=colors[3],
+                        this_current_screen_border=colors[7],
+                        this_screen_border=colors[1],
                         fontsize=14,
                         spacing=5
                         ),
+                    widget.TextBox(
+                       text = "▓▒░",
+                       font = "feather",
+                       fontsize = 24,
+                       background = colors[0],
+                       foreground = colors[7],
+                       padding = 0
+                       ),
                     widget.Prompt(),
-                    widget.WindowName(foreground="#da69c6"),
+                    widget.WindowName(foreground=colors[7]),
                     widget.Chord(
                         chords_colors={
                             "launch": ("#ff0000", "#ffffff"),
@@ -491,8 +499,16 @@ else:
                         name_transform=lambda name: name.upper(),
                         ),
                     widget.TextBox(
+                       text = "░▒▓",
+                       font = "feather",
+                       fontsize = 24,
+                       background = colors[0],
+                       foreground = colors[7],                       
+                       padding = 0
+                       ),
+                    widget.TextBox(
                         "╱╱╱ ACAB", 
-                        foreground="#03f4fc",
+                        foreground=colors[5],
                         mouse_callbacks={
                             'Button1': lazy.spawn('acab'),
                             'Button3': lazy.spawn('acab')
@@ -501,13 +517,13 @@ else:
                     widget.Systray(),
                     widget.Clock(
                         format="%Y-%m-%d %a ", 
-                        foreground="#822a8b",
+                        foreground=colors[6],
                         mouse_callbacks={
                             'Button1': open_calendar,
                             'Button3': lazy.spawn('gsimplecal prev_month')
                             }
                         ),
-                    widget.Clock(format="%H:%M:%S", foreground="#03f4fc"),
+                    widget.Clock(format="%H:%M:%S", foreground=colors[5]),
                     widget.CheckUpdates(
                         update_interval = 30,
                         distro='Arch',
@@ -516,55 +532,58 @@ else:
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
                         ),
-                    widget.QuickExit(foreground="#822a8b"),
+                    widget.QuickExit(foreground=colors[6]),
                     ],
-                26,
+                28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
-                border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
+                border_color=["000000", "000000", colors[7], "000000"],  # Borders are magenta
+                #margin=[10, 15, 5, 15],
+                #opacity=0.2,
+                #background="#822a8b"
             ),
             bottom=bar.Bar(
                 [
-                    widget.CapsNumLockIndicator(foreground="#ff9ff9"),
+                    widget.CapsNumLockIndicator(foreground=colors[7]),
                     widget.Spacer(length=50),
-                    widget.TextBox(text=commands.get_name(), foreground=["#ff00c3"]),
+                    widget.TextBox(text=commands.get_name(), foreground=[colors[2]]),
                     widget.TextBox("@", foreground="#cab7c9"),  
-                    widget.TextBox(text=commands.get_host(), foreground=["#ff00c3"]),
+                    widget.TextBox(text=commands.get_host(), foreground=[colors[2]]),
                     widget.Spacer(length=275),
-                    widget.TextBox(text=commands.get_kernel_release(), foreground=["#03f4fc"]),
+                    widget.TextBox(text=commands.get_kernel_release(), foreground=[colors[5]]),
                     widget.Spacer(length=25),
                     widget.GenPollText(
                         func=commands.get_uptime,
                         update_interval=60,
-                        foreground=["#ff9ff9"]
+                        foreground=[colors[7]]
                         ),
                     widget.Spacer(length=275),
-                    widget.TextBox(" mem:", foreground="#03f4fc"),               
+                    widget.TextBox(" mem:", foreground=colors[5]),               
                     widget.MemoryGraph(
                         #line_width=1,
                         #border_width=1,
                         #width=4,
                         #type='box',
-                        graph_color=["#ff57f7"],
-                        fill_color=["#ff57f7"]
+                        graph_color=[colors[6]],
+                        fill_color=[colors[6]]
                         ),
                     widget.Spacer(length=15),
-                    widget.TextBox(" CPU:", foreground="#03f4fc"),
+                    widget.TextBox(" CPU:", foreground=colors[5]),
                     widget.CPUGraph(
-                        graph_color=["#ff57f7"],
-                        fill_color=["#ff57f7"]
+                        graph_color=[colors[6]],
+                        fill_color=[colors[6]]
                         ),
                     therm_widget.ThermalSensorCC(),
                     widget.Spacer(length=15),
-                    widget.TextBox(" net:", foreground="#03f4fc"),
+                    widget.TextBox(" net:", foreground=colors[5]),
                     widget.NetGraph(
-                        graph_color=["#ff57f7"],
-                        fill_color=["#ff57f7"]
+                        graph_color=[colors[6]],
+                        fill_color=[colors[6]]
                         ),
 
                     ],
                 24,
                 border_width=[1, 0, 0, 0],  # Draw top borders
-                border_color=["bd92bb", "000000", "000000", "000000"]  # Borders are pink/grey
+                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are pink/grey
             ),
         ),
     ]
