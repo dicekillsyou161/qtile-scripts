@@ -10,7 +10,6 @@ import psutil
 import therm_widget
 import iwlib
 import primary_display
-#import internet_widget
 
 from plasma import Plasma
 from qtile_extras.widget import GlobalMenu, WiFiIcon
@@ -212,10 +211,8 @@ keys = [
     ),
     Key([mod, alt], "v",
         lazy.spawn("midori"),
-        # lazy.spawn("xdg-open https://vim.rtorr.com"),
         time.sleep(2),
         lazy.window.toggle_floating(),
-        # desc='toggle floating'
     ),
     Key([mod, "shift", "control"], "h",
         lazy.layout.shuffle_down(),
@@ -373,7 +370,6 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                             }
                         ),
                     widget.Clock(format="%H:%M:%S", foreground="#03f4fc"),
-                    #internet_widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
                         distro='Arch',
@@ -381,7 +377,6 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         colour_no_update=["00ff00"],
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
-                        # execute=commands.update
                         ),
                     widget.QuickExit(foreground="#822a8b"),
                     ],
@@ -478,7 +473,6 @@ else:
                             }
                         ),
                     widget.Clock(format="%H:%M:%S", foreground="#03f4fc"),
-                    #widget.Internet(),
                     widget.CheckUpdates(
                         update_interval = 30,
                         distro='Arch',
@@ -486,7 +480,6 @@ else:
                         colour_no_update=["00ff00"],
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
-                        # execute=commands.update
                         ),
                     widget.QuickExit(foreground="#822a8b"),
                     ],
@@ -548,7 +541,6 @@ mouse = [
         Click([mod], "Button2", lazy.window.bring_to_front()),
         ]
 
-# dgroups_app_rules = []  # type: list
 follow_mouse_focus = False #don't have the cursor just follow wherever the mouse is, this is a fucking nightmare with multiple monitors, just typing shit all over the place. Fuck.
 bring_front_click = True # Click into a window to change focus
 cursor_warp = False
