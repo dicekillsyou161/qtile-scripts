@@ -334,6 +334,13 @@ if str(primary_disp.get_prim_disp()) == "Disp":
         Screen(
             top=bar.Bar(
                 [
+                    widget.Sep(
+                        linewidth=2,
+                        foreground="#000000",
+                        background="#000000",
+                        padding=6,
+                        size_percent=50,
+                    ),
                     widget.CurrentLayout(foreground="#da69c6"),
                     widget.GroupBox(
                         active="03f4fc", 
@@ -344,6 +351,14 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         fontsize=14,
                         spacing=5
                         ),
+                    widget.TextBox(
+                       text = "█▓▒░",
+                       font = "feather",
+                       fontsize = 29,
+                       background = "#000000",
+                       foreground = "#da69c6",
+                       padding = 0
+                       ),
                     widget.Prompt(),
                     widget.WindowName(foreground="#da69c6"),
                     widget.Chord(
@@ -352,6 +367,14 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                             },
                         name_transform=lambda name: name.upper(),
                         ),
+                    widget.TextBox(
+                       text = "░▒▓█",
+                       font = "feather",
+                       fontsize = 29,
+                       background = "#000000",
+                       foreground = "#da69c6",
+                       padding = 0
+                       ),
                     widget.TextBox(
                         "╱╱╱ ACAB", 
                         foreground="#03f4fc",
@@ -363,7 +386,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                     widget.Systray(),
                     widget.Clock(
                         format="%Y-%m-%d %a ", 
-                        foreground="#822a8b",
+                        foreground="#da69c6",
                         mouse_callbacks={
                             'Button1': open_calendar,
                             'Button3': lazy.spawn('gsimplecal prev_month')
@@ -378,11 +401,14 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
                         ),
-                    widget.QuickExit(foreground="#822a8b"),
+                    widget.QuickExit(foreground="#da69c6"),
                     ],
-                26,
+                28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
-                border_color=["000000", "000000", "bd92bb", "000000"]  # Borders are magenta
+                border_color=["000000", "000000", "bd92bb", "000000"],  # Borders are magenta
+                #margin=[10, 15, 5, 15],
+                #opacity=0.2,
+                #background="#822a8b"
             ),
         ),
     Screen(
