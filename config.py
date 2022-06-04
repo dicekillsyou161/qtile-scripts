@@ -12,16 +12,13 @@ import iwlib
 import primary_display
 
 from plasma import Plasma
-from qtile_extras.widget import GlobalMenu, WiFiIcon
 from libqtile import qtile
 from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, EzKey, Rule
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile.widget import Spacer
-from floating_window_snapping import move_snap_window
 from graphical_notifications import Notifier
-from powerline.bindings.qtile.widget import PowerlineTextBox
 from typing import List  # noqa: F401from typing import List  # noqa: F401
 from subprocess import call, check_output
 from capnum import CapNum
