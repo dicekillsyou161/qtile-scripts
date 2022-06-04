@@ -218,7 +218,13 @@ keys = [
         lazy.spawn('forest-theme'),
         lazy.reload_config()
     ),
-  
+    Key(
+        [mod, alt, "shift"],
+        "3", 
+        lazy.spawn('dynamic-theme'),
+        lazy.reload_config()
+    ),
+
 
 
     ### Switch focus of monitors
@@ -264,7 +270,7 @@ groups = [
           ),
           
           # Next groups do not autostart, and only launch if the rule matches
-     	  Group('GFX', persist=False, init=False, layout='treetab',
+     	  Group('GFX', persist=False, init=False, layout='columns',
           matches=[Match(wm_class=['gimp', 'org.gimp.GIMP', 'GNU Image Manipulation Program', 'Gimp-2.10'])]
           ),
      	  
@@ -273,7 +279,7 @@ groups = [
           Group('DISC', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['discord'])
               ], position=3),
-          Group('WWW', init=False, persist=False, exclusive=True, layout='treetab', matches=[
+          Group('WWW', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['chromium-browser', 'firefox'],
                     role=['browser'])
               ], position=4),
