@@ -205,6 +205,21 @@ keys = [
     Key([mod, alt], "9", lazy.spawn('pactl -- set-sink-volume 0 90%')),
     Key([mod, alt], "0", lazy.spawn('pactl -- set-sink-volume 0 0%')),
 
+    # Keybinds to dynamically change the system theme & wallpaper
+    Key(
+        [mod, alt, "shift"],
+        "1", 
+        lazy.spawn('cyangenta-theme'),
+        lazy.reload_config()
+    ),
+    Key(
+        [mod, alt, "shift"],
+        "2", 
+        lazy.spawn('forest-theme'),
+        lazy.reload_config()
+    ),
+  
+
 
     ### Switch focus of monitors
     Key([mod], "period",
