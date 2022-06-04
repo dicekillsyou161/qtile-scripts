@@ -352,9 +352,9 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         spacing=5
                         ),
                     widget.TextBox(
-                       text = "█▓▒░",
+                       text = "▓▒░",
                        font = "feather",
-                       fontsize = 29,
+                       fontsize = 24,
                        background = "#000000",
                        foreground = "#da69c6",
                        padding = 0
@@ -368,9 +368,9 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         name_transform=lambda name: name.upper(),
                         ),
                     widget.TextBox(
-                       text = "░▒▓█",
+                       text = "░▒▓",
                        font = "feather",
-                       fontsize = 29,
+                       fontsize = 24,
                        background = "#000000",
                        foreground = "#da69c6",
                        padding = 0
