@@ -422,7 +422,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                     ],
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
-                border_color=["000000", "000000", colors[7], "000000"],  # Borders are magenta
+                border_color=["000000", "000000", colors[7], "000000"],  # Borders theme dependent
                 #margin=[10, 15, 5, 15],
                 #opacity=0.2,
                 #background="#822a8b"
@@ -471,7 +471,7 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                     ],
                 24,
                 border_width=[1, 0, 0, 0],  # Draw top borders
-                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are pink/grey
+                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are theme dependent
             ),
         ),
     ]
@@ -491,7 +491,7 @@ else:
                     widget.GroupBox(
                         active=colors[5], 
                         disable_drag=True, 
-                        inactive=colors[3],
+                        inactive=colors[1],
                         this_current_screen_border=colors[7],
                         this_screen_border=colors[1],
                         fontsize=14,
@@ -551,7 +551,7 @@ else:
                     ],
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
-                border_color=["000000", "000000", colors[7], "000000"],  # Borders are magenta
+                border_color=["000000", "000000", colors[7], "000000"],  # Borders are theme dependent
                 #margin=[10, 15, 5, 15],
                 #opacity=0.2,
                 #background="#822a8b"
@@ -598,7 +598,7 @@ else:
                     ],
                 24,
                 border_width=[1, 0, 0, 0],  # Draw top borders
-                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are pink/grey
+                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are theme dependent
             ),
         ),
     ]
