@@ -320,7 +320,16 @@ dgroups_key_binder = simple_key_binder("mod4")
 
 
 layouts = [
-    layout.TreeTab(sections=["1312","ACAB","161","AFA"]),
+    layout.TreeTab(
+        sections=["1312","ACAB","161","AFA"],
+        panel_width=100,
+        active_bg=colors[2],
+        active_fg=colors[7],
+        bg_color=colors[0],
+        inactive_bg=colors[1],
+        inactive_fg=colors[7],
+        fontsize=12
+    ),
     layout.Columns(border_focus_stack=[colors[6], colors[6]], border_width=4),
     layout.Max(),
     layout.VerticalTile(),
