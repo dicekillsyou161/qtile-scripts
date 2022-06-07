@@ -10,6 +10,7 @@ import psutil
 import therm_widget
 import iwlib
 import primary_display
+import bar_dfn
 
 from plasma import Plasma
 from libqtile import qtile
@@ -25,6 +26,7 @@ from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
 from primary_display import primary_disp
+from bar_dfn import top_primary, bottom_primary 
 
 ## Utils
 
@@ -225,6 +227,8 @@ keys = [
         lazy.reload_config()
     ),
 
+    # Add in a screek lock keybind
+    Key([mod, alt, "control"], "Escape", lazy.spawn('slock')),
 
 
     ### Switch focus of monitors
@@ -298,6 +302,9 @@ groups = [
           Group('UNREAL', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['UE4Editor'])
               ], position=6),          
+          Group('NP++', init=False, persist=True, exclusive=True, layout='max', matches=[
+              Match(wm_class=['Notepadqq'])
+              ], position=7),
 
           # Misc Groups Persist
           Group("MISC1", layout='treetab'),
@@ -383,14 +390,14 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         fontsize=14,
                         spacing=5
                         ),
-                    widget.TextBox(
-                       text = "▓▒░",
-                       font = "feather",
-                       fontsize = 24,
-                       background = colors[0],
-                       foreground = colors[7],
-                       padding = 0
-                       ),
+#                    widget.TextBox(
+#                       text = "▓▒░",
+#                       font = "feather",
+#                       fontsize = 24,
+#                       background = colors[0],
+#                       foreground = colors[7],
+#                       padding = 0
+#                       ),
                     widget.Prompt(),
                     widget.WindowName(foreground=colors[7]),
                     widget.Chord(
@@ -399,14 +406,17 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                             },
                         name_transform=lambda name: name.upper(),
                         ),
-                    widget.TextBox(
-                       text = "░▒▓",
-                       font = "feather",
-                       fontsize = 24,
-                       background = colors[0],
-                       foreground = colors[7],                       
-                       padding = 0
-                       ),
+                    widget.Cmus(
+                        foreground=colors[5]
+                        ),
+ #                   widget.TextBox(
+ #                      text = "░▒▓",
+ #                      font = "feather",
+ #                      fontsize = 24,
+ #                      background = colors[0],
+ #                      foreground = colors[7],                       
+ #                      padding = 0
+ #                      ),
                     widget.TextBox(
                         "╱╱╱ ACAB", 
                         foreground=colors[5],
