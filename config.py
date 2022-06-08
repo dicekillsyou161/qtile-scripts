@@ -190,6 +190,8 @@ keys = [
     Key([mod, "shift"], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, alt], "w", kill_all_windows_minus_current(), desc="Kill focused window except this one"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([mod, "shift"], "r", lazy.spawn("rofi -show combi")),   
+    Key([mod, "shift"], "d", lazy.spawn("rofi -show drun")), 
     Key([mod, "control", "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
