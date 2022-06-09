@@ -190,8 +190,8 @@ keys = [
     Key([mod, "shift"], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, alt], "w", kill_all_windows_minus_current(), desc="Kill focused window except this one"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "shift"], "r", lazy.spawn("rofi -show combi")),   
-    Key([mod, "shift"], "d", lazy.spawn("rofi -show drun")), 
+    Key([mod, "shift"], "e", lazy.spawn("rofi -show combi")),   
+    Key([mod, "shift"], "r", lazy.spawn("rofi -show drun")), 
     Key([mod, "control", "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
@@ -339,9 +339,9 @@ layouts = [
         inactive_fg=colors[7],
         fontsize=12
     ),
-    layout.Columns(border_focus_stack=[colors[6], colors[6]], border_width=4),
+#    layout.Columns(border_focus_stack=[colors[6], colors[6]], border_width=4), #commenting out for same reason as vertical time
     layout.Max(),
-    layout.VerticalTile(),
+#    layout.VerticalTile(),  #Commenting out cause I never use this one and Plasma can do the same shit better
     layout.Floating(
         border_normal=colors[3],
         border_focus=colors[5],
@@ -369,6 +369,9 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+## This function is pulling a function that pulls the first 4 characters of the primary screen using xrandr
+## bash script I wrote and added to PATH. If it has the HDMI output as prim, it uses my work.sh arandr preset
+## and puts my bars on one screen since I am using a VM on the other 4 screens, with the 5th as a host monitor. 
 
 if str(primary_disp.get_prim_disp()) == "Disp":
     screens = [
@@ -662,6 +665,7 @@ reconfigure_screens = True
 auto_minimize = True
 
 # When using the Wayland backend, this can be used to configure input devices.
+# I want to use wayland, for eventual debugging. 
 wl_input_rules = None
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
