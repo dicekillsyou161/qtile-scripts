@@ -191,7 +191,8 @@ keys = [
     Key([mod, alt], "w", kill_all_windows_minus_current(), desc="Kill focused window except this one"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "shift"], "e", lazy.spawn("rofi -show combi")),   
-    Key([mod, "shift"], "r", lazy.spawn("rofi -show drun")), 
+    Key([mod, "shift"], "r", lazy.spawn("rofi -show drun")),
+    Key([mod, alt, "control", "shift"], "c", lazy.spawn("rcalc")),
     Key([mod, "control", "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "Print", lazy.spawn("scrot -e 'mv $f /home/zorthesosen/Pictures/screenshots/'")),
@@ -448,7 +449,16 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
                         ),
-                    widget.QuickExit(foreground=colors[6]),
+                #    widget.QuickExit(foreground=colors[6]),
+                    widget.TextBox(
+                        "[ shutdown ]", 
+                        foreground=colors[6],
+                        mouse_callbacks={
+                            'Button1': lazy.spawn("kitty rofi-power")
+                            #'Button3': lazy.spawn('/user/zorthesosen/.local/bin/rofi-power')
+                            }
+                        ),
+
                     ],
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
