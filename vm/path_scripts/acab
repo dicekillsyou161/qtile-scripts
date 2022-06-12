@@ -1,0 +1,5 @@
+#!/bin/bash
+
+screen -d -m kitty +kitten panel sh -c 'printf "\n\n\n								ACAB"; sleep 15s' 
+
+zsh
