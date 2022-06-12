@@ -357,9 +357,9 @@ layouts = [
         border_focus=colors[7],
         border_normal_fixed=colors[3],
         border_focus_fixed=colors[7],
-        border_width=1,
+        border_width=2,
         border_width_single=0,
-        margin=10
+        margin=8
     ),
 ]
 
