@@ -12,4 +12,4 @@ feh --bg-fill .config/qtile/themes/cyangenta/MDN-MDC-1312-v2.jpg
 #xscreensaver-command --restart
 #xscreensaver -nosplash
 
-picom -b
+picom --experimental-backends -b
