@@ -463,9 +463,9 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
                 border_color=["000000", "000000", colors[7], "000000"],  # Borders theme dependent
-                #margin=[10, 15, 5, 15],
-                #opacity=0.2,
-                #background="#822a8b"
+                margin=[3, 5, 3, 5],
+                opacity=0.85,
+                # background="#822a8b"
             ),
         ),
     Screen(
@@ -511,7 +511,9 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                     ],
                 24,
                 border_width=[1, 0, 0, 0],  # Draw top borders
-                border_color=[colors[7], "000000", "000000", "000000"]  # Borders are theme dependent
+                border_color=[colors[7], "000000", "000000", "000000"],  # Borders are theme dependent
+                opacity=0.8,
+                margin=[0,0,1,0]
             ),
         ),
     ]
