@@ -3,6 +3,8 @@
 cp /home/zorthesosen/dynamic-theme-loader/theme.jpg /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-theme.jpg
 cp /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg
 
+echo "/home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg" | tee /home/zorthesosen/.config/qtile/themes/current_theme_wallpaper
+
 wal -c
 wal -i /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-theme.jpg
 screen -d -m feh --bg-fill /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg

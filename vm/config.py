@@ -357,7 +357,7 @@ layouts = [
         border_focus=colors[7],
         border_normal_fixed=colors[3],
         border_focus_fixed=colors[7],
-        border_width=2,
+        border_width=0,
         border_width_single=0,
         margin=8
     ),
@@ -443,11 +443,11 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                     widget.Clock(format="%H:%M:%S", foreground=colors[5]),
                     widget.CheckUpdates(
                         update_interval = 30,
-                        distro='Arch',
+                        distro='Arch_checkupdates',
                         display_format='{updates} Updates',
                         colour_no_update=["00ff00"],
                         colour_have_updates=["ff0000"],
-                        mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
+                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + '-e sudo pacman -Syu')},
                         ),
                     widget.QuickExit(foreground=colors[6]),
                 #    widget.TextBox(
