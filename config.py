@@ -357,9 +357,9 @@ layouts = [
         border_focus=colors[5],
         border_normal_fixed=colors[3],
         border_focus_fixed=colors[5],
-        border_width=1,
+        border_width=0,
         border_width_single=0,
-        margin=0
+        margin=7
     ),
 ]
 
@@ -449,22 +449,22 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
                         ),
-                #    widget.QuickExit(foreground=colors[6]),
-                    widget.TextBox(
-                        "[ shutdown ]", 
-                        foreground=colors[6],
-                        mouse_callbacks={
-                            'Button1': lazy.spawn("kitty rofi-power")
-                            #'Button3': lazy.spawn('/user/zorthesosen/.local/bin/rofi-power')
-                            }
-                        ),
+                    widget.QuickExit(foreground=colors[6]),
+#                    widget.TextBox(
+#                        "[ shutdown ]", 
+#                        foreground=colors[6],
+#                        mouse_callbacks={
+#                            'Button1': lazy.spawn("kitty rofi-power")
+#                            #'Button3': lazy.spawn('/user/zorthesosen/.local/bin/rofi-power')
+#                            }
+#                        ),
 
                     ],
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
                 border_color=["000000", "000000", colors[7], "000000"],  # Borders theme dependent
-                #margin=[10, 15, 5, 15],
-                #opacity=0.2,
+                margin=[4, 2, 2, 4],
+                opacity=0.8
                 #background="#822a8b"
             ),
         ),
@@ -510,6 +510,8 @@ if str(primary_disp.get_prim_disp()) == "Disp":
 
                     ],
                 24,
+                margin=[0, 0, 1, 0],
+                opacity=0.85,
                 border_width=[1, 0, 0, 0],  # Draw top borders
                 border_color=[colors[7], "000000", "000000", "000000"]  # Borders are theme dependent
             ),
@@ -592,9 +594,8 @@ else:
                 28,
                 border_width=[0, 0, 1, 0],  # Draw top and bottom borders
                 border_color=["000000", "000000", colors[7], "000000"],  # Borders are theme dependent
-                #margin=[10, 15, 5, 15],
-                #opacity=0.2,
-                #background="#822a8b"
+                margin=[4, 2, 2, 4],
+                opacity=0.8
             ),
             bottom=bar.Bar(
                 [
@@ -637,6 +638,8 @@ else:
 
                     ],
                 24,
+                margin=[0, 0, 1, 0],
+                opacity=0.85,
                 border_width=[1, 0, 0, 0],  # Draw top borders
                 border_color=[colors[7], "000000", "000000", "000000"]  # Borders are theme dependent
             ),
