@@ -10,7 +10,7 @@ import psutil
 import therm_widget
 import iwlib
 import primary_display
-import bar_dfn
+# import bar_dfn
 
 from plasma import Plasma
 from libqtile import qtile
@@ -26,9 +26,9 @@ from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
 from primary_display import primary_disp
-from bar_dfn import top_primary, bottom_primary 
+# from bar_dfn import top_primary, bottom_primary 
 
-## Utils
+##Utils
 
 class Commands:
     update = 'sudo pacman -Syu'
@@ -226,9 +226,16 @@ keys = [
     Key(
         [mod, alt, "shift"],
         "3", 
+        lazy.spawn('pastel-theme'),
+        lazy.reload_config()
+    ),
+    Key(
+        [mod, alt, "shift"],
+        "4", 
         lazy.spawn('dynamic-theme'),
         lazy.reload_config()
     ),
+
 
     # Add in a screek lock keybind
     Key([mod, alt, "control"], "Escape", lazy.spawn('slock')),

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wal -c
+wal -i /home/zorthesosen/.config/qtile/themes/pastel/pastel-theme.jpg
+feh --bg-fill /home/zorthesosen/.config/qtile/themes/pastel/pastel-wallpaper.jpg

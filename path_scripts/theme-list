@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd /mnt/sdd/sdd3/arch-vm-storage/wallpapers 
+for f in *.jpg; do
+    printf '%s\n' "${f%.jpg}"
+done
+
+# ll /mnt/vdb/arch-vm-storage/wallpapers | cut -f 1 -d '.'
