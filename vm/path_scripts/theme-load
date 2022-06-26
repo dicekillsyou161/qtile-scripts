@@ -1,0 +1,8 @@
+#!/bin/bash
+
+type=".jpg"
+theme_query=$1
+new_theme="${theme_query}${type}"
+
+cp /mnt/vdb/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/theme.jpg
+cp /mnt/vdb/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
