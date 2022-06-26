@@ -226,6 +226,12 @@ keys = [
     Key(
         [mod, alt, "shift"],
         "3", 
+        lazy.spawn('pastel-theme'),
+        lazy.reload_config()
+    ),
+    Key(
+        [mod, alt, "shift"],
+        "4", 
         lazy.spawn('dynamic-theme'),
         lazy.reload_config()
     ),
