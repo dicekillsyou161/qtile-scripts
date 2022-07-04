@@ -460,15 +460,14 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + '-e sudo pacman -Syu')},
                         ),
-                    widget.QuickExit(foreground=colors[6]),
-                #    widget.TextBox(
-                #        "[ shutdown ]", 
-                #        foreground=colors[6],
-                #        mouse_callbacks={
-                #            'Button1': lazy.spawn("kitty rofi-power")
-                #            #'Button3': lazy.spawn('/user/zorthesosen/.local/bin/rofi-power')
-                #            }
-                #        ),
+                #    widget.QuickExit(foreground=colors[6]),
+                    widget.TextBox(
+                        "[ shutdown ]", 
+                        foreground=colors[6],
+                        mouse_callbacks={
+                            'Button1': lazy.spawn("rofigen -f /home/zorthesosen/rofi-menus/power-menu")
+                            }
+                        ),
 
                     ],
                 28,
