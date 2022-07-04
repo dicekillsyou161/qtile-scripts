@@ -242,7 +242,7 @@ keys = [
     Key(
         [mod, alt, "shift"],
         "m", 
-        lazy.spawn('rofigen /home/zorthesosen/rofi-menus/menu-select')
+        lazy.spawn('rofigen -f /home/zorthesosen/rofi-menus/menu-select')
     ),
      
 ### Switch focus of monitors
