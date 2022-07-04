@@ -239,7 +239,13 @@ keys = [
 
     # Add in a screek lock keybind
     Key([mod, alt, "control"], "Escape", lazy.spawn('slock')),
-
+    
+    Key(
+        [mod, alt, "shift"],
+        "m", 
+        lazy.spawn('rofigen -f /home/zorthesosen/rofi-menus/menu-select')
+    ),
+    
 
     ### Switch focus of monitors
     Key([mod], "period",
