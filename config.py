@@ -285,7 +285,7 @@ groups = [
           
           # Terminals
           Group("CLI", exclusive=True,
-          matches=[Match(wm_class=['kitty', 'alacritty', "midori"])],
+          matches=[Match(wm_class=['kitty', "midori"])],
           position=1,layout='plasma'
           ),
           
@@ -329,7 +329,7 @@ groups = [
 # dgroup rules that not belongs to any group
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
-    Rule(Match(title=['nested', 'gscreenshot', 'Vim Cheat Sheet', 'Gsimplecal'],
+    Rule(Match(title=['nested', 'gscreenshot', 'Terminal-Floating', 'Gsimplecal'],
                wm_class=['Guake.py', 'Exe', 'Gsimplecal', 'Onboard', 'Florence',
                          'Plugin-container', 'Terminal', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
@@ -462,15 +462,14 @@ if str(primary_disp.get_prim_disp()) == "Disp":
                         colour_have_updates=["ff0000"],
                         mouse_callbacks = {'Button1': lazy.spawn(terminal + '-e sudo pacman -Syu')},
                         ),
-                    widget.QuickExit(foreground=colors[6]),
-#                    widget.TextBox(
-#                        "[ shutdown ]", 
-#                        foreground=colors[6],
-#                        mouse_callbacks={
-#                            'Button1': lazy.spawn("kitty rofi-power")
-#                            #'Button3': lazy.spawn('/user/zorthesosen/.local/bin/rofi-power')
-#                            }
-#                        ),
+#                    widget.QuickExit(foreground=colors[6]),
+                    widget.TextBox(
+                        "[ shutdown ]", 
+                        foreground=colors[6],
+                        mouse_callbacks={
+                            'Button1': lazy.spawn("rofigen -f /home/zorthesosen/rofi-menus/power-menu")
+                            }
+                        ),
 
                     ],
                 28,
@@ -678,7 +677,7 @@ floating_layout = layout.Floating(
             Match(wm_class="makebranch"),  # gitk
             Match(wm_class="maketag"),  # gitk
             Match(wm_class="ssh-askpass"),  # ssh-askpass
-            Match(title="branchdialog"),  # gitk
+            Match(title="Terminal-Floating"),  # gitk
             Match(title="pinentry"),  # GPG key password entry
             ]
         )

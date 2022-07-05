@@ -6,3 +6,7 @@ new_theme="${theme_query}${type}"
 
 cp /mnt/sdd/sdd3/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/theme.jpg
 cp /mnt/sdd/sdd3/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
+
+dynamic-theme
+
+qtile cmd-obj -o cmd -f restart
