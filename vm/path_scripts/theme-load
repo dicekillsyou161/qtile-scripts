@@ -9,4 +9,6 @@ cp /mnt/vdb/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-th
 
 dynamic-theme
 
+betterlockscreen -u /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
+
 qtile cmd-obj -o cmd -f restart
