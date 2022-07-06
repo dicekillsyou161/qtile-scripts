@@ -283,7 +283,7 @@ groups = [
           
           # Terminals
           Group("CLI", exclusive=True,
-          matches=[Match(wm_class=['kitty', 'alacritty', "midori"])],
+          matches=[Match(wm_class=['kitty', 'midori'])],
           position=1,layout='plasma'
           ),
           
@@ -327,9 +327,9 @@ groups = [
 # dgroup rules that not belongs to any group
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
-    Rule(Match(title=['nested', 'gscreenshot', 'Vim Cheat Sheet', 'Gsimplecal'],
+    Rule(Match(title=['nested', 'gscreenshot', 'Terminal-Floating', 'Gsimplecal'],
                wm_class=['Guake.py', 'Exe', 'Gsimplecal', 'Onboard', 'Florence',
-                         'Plugin-container', 'Terminal', 'Gpaint',
+                         'Plugin-container', 'alacritty', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
                          'Ghost', 'feh', 'Gnuplot', 'Pinta', 'Midori'],
                ),
@@ -674,7 +674,7 @@ floating_layout = layout.Floating(
             Match(wm_class="makebranch"),  # gitk
             Match(wm_class="maketag"),  # gitk
             Match(wm_class="ssh-askpass"),  # ssh-askpass
-            Match(title="branchdialog"),  # gitk
+            Match(title="Terminal-Floating"),  # term-float
             Match(title="pinentry"),  # GPG key password entry
             ]
         )
