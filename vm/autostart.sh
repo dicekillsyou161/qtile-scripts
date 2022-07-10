@@ -9,4 +9,4 @@ wal -R                                                                          
 current_wallpaper=$(</home/zorthesosen/.config/qtile/themes/current_theme_wallpaper)  #Read the path of the last loaded wallpaper into a variable
 feh --bg-fill $current_wallpaper                                                      #re-set the wallpaper after a reboot
 
-picom --experimental-backends -b                                                      #use picom for fancy UI elements (such as transparency)
+picom -b                                                      #use picom for fancy UI elements (such as transparency)

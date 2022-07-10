@@ -26,7 +26,7 @@ from capnum import CapNum
 from platforms import num_screens, hostname
 from therm_widget import ThermalSensorCC
 from primary_display import primary_disp
-from bar_dfn import top_primary, bottom_primary 
+# from bar_dfn import top_primary, bottom_primary 
 
 ## Utils
 
@@ -458,7 +458,7 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                         display_format='{updates} Updates',
                         colour_no_update=["00ff00"],
                         colour_have_updates=["ff0000"],
-                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn(myTerm + '-e sudo pacman -Syu')},
+                        mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn('kitty -e sudo pacman -Syu')},
                         ),
                 #    widget.QuickExit(foreground=colors[6]),
                     widget.TextBox(
