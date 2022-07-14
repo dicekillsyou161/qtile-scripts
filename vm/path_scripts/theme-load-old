@@ -11,9 +11,8 @@ dynamic-theme
 
 betterlockscreen -u /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
 
-discord
 wal-discord; beautifuldiscord --css ~/.cache/wal-discord/style.css
 
-# razer-cli -e multicolor,xpalette
+razer-cli -e multicolor,xpalette
 
 qtile cmd-obj -o cmd -f restart
