@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /mnt/vdc/arch-vm-storage/wallpapers 
+cd /mnt/vdb/arch-vm-storage/wallpapers 
 for f in *.jpg; do
     printf '%s\n' "${f%.jpg}"
 done

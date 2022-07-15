@@ -478,6 +478,7 @@ if str(primary_disp.get_prim_disp()) == "Disp" or str(primary_disp.get_prim_disp
                 # background="#822a8b"
             ),
         ),
+    Screen(),
     Screen(
             bottom=bar.Bar(
                 [

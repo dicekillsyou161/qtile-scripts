@@ -1,8 +1,7 @@
 #!/bin/sh
 
 ./.screenlayout/default.sh
-# screen -d -m flameshot #Don't need this with using the alacritty floating terminals now so easily
-screen -d -m yakuake
+screen -d -m flameshot 
 screen -d -m volumeicon
 wal -R                                                                                #set the last used theme settings from pywal's cache
 
