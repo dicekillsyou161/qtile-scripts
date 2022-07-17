@@ -4,8 +4,8 @@ type=".jpg"
 theme_query=$1
 new_theme="${theme_query}${type}"
 
-cp /mnt/vdb/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/theme.jpg
-cp /mnt/vdb/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
+cp /mnt/vdc/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/theme.jpg
+cp /mnt/vdc/arch-vm-storage/wallpapers/${new_theme} /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
 
 dynamic-theme
 
@@ -14,6 +14,6 @@ betterlockscreen -u /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
 discord
 wal-discord; beautifuldiscord --css ~/.cache/wal-discord/style.css
 
-# razer-cli -e multicolor,xpalette
+razer-cli -e multicolor,xpalette
 
 qtile cmd-obj -o cmd -f restart
