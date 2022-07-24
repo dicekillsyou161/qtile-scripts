@@ -238,7 +238,7 @@ keys = [
 
 
     # Add in a screek lock keybind
-    Key([mod, alt, "control"], "Escape", lazy.spawn('slock')),
+    Key([mod, alt, "control"], "Escape", lazy.spawn('betterlockscreen -l dimblur --display 1 --span')),
     
     Key(
         [mod, alt, "shift"],
