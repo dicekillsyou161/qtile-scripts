@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cp /home/zorthesosen/dynamic-theme-loader/theme.png /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-theme.png
+cp /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg
+
+echo "/home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg" | tee /home/zorthesosen/.config/qtile/themes/current_theme_wallpaper
+
+wal -c
+wal -i /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-theme.png
+screen -d -m feh --bg-fill /home/zorthesosen/.config/qtile/themes/dynamic/dynamic-wallpaper.jpg

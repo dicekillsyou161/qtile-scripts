@@ -1,0 +1,20 @@
+#!/bin/bash
+
+type=".jpg"
+theme_query=$1
+new_wallpaper="${theme_query}-wallpaper${type}"
+theme_pallette="${theme_query}-theme.png"
+
+cp /mnt/vdc/arch-vm-storage/wallpapers/${theme_pallette} /home/zorthesosen/dynamic-theme-loader/theme.png
+cp /mnt/vdc/arch-vm-storage/wallpapers/${new_wallpaper} /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
+
+dynamic-theme-mp
+
+betterlockscreen -u /home/zorthesosen/dynamic-theme-loader/wallpaper.jpg
+
+discord
+wal-discord; beautifuldiscord --css ~/.cache/wal-discord/style.css
+
+razer-cli -e multicolor,xpalette
+
+qtile cmd-obj -o cmd -f restart

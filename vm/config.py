@@ -315,14 +315,20 @@ groups = [
                 ),
           Group('UNREAL', init=False, persist=False, exclusive=True, layout='max', matches=[
               Match(wm_class=['UE4Editor'])
-              ], position=6),          
+              ]),          
           Group('NP++', init=False, persist=True, exclusive=True, layout='max', matches=[
               Match(wm_class=['Notepadqq'])
+              ], position=6),
+          Group('RDP', init=False, persist=True, exclusive=True, layout='max', matches=[
+              Match(wm_class=['rdesktop'])
               ], position=7),
 
           # Misc Groups Persist
-          Group("MISC1", layout='treetab'),
-          Group("MISC2", layout='plasma')]
+          Group("MISC", layout='max'),
+          Group("CONF", layout='treetab', matches=[
+              Match(wm_class=['Pulseaudio-equalizer-gtk'])
+              ], position=8)
+            ]
           
 # dgroup rules that not belongs to any group
 dgroups_app_rules = [
